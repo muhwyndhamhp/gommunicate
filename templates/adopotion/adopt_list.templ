@@ -14,10 +14,10 @@ func isLastItem(index, length int) bool {
     return index == length -1
 }
 
-templ AdoptionList(pets []pet.Pet, nextURL string) {
+templ AdoptionList(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) {
     @base.DocType()
     @base.Head()
-    @base.Body(page(pets, nextURL))
+    @base.Body(page(pets, petTypes, nextURL))
 }
 
 templ List(pets []pet.Pet, nextURL string) {
@@ -60,10 +60,10 @@ func RoundTime(input float64) int {
 	return int(i)
 }
 
-templ page(pets []pet.Pet, nextURL string) {
+templ page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) {
     <p>Followings are list of adoptable pets!</p>
     <br/>
-    @searchBar()
+    @searchBar(petTypes)
     <br />
     <div class="columns-2 gap-4 md:gap-6 mt-4 xl:gap-8 md:columns-4" id="pets-parent">
         @List(pets, nextURL)

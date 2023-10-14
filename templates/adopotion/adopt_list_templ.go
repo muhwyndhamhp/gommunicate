@@ -22,7 +22,7 @@ func isLastItem(index, length int) bool {
 	return index == length-1
 }
 
-func AdoptionList(pets []pet.Pet, nextURL string) templ.Component {
+func AdoptionList(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
 		templBuffer, templIsBuffer := w.(*bytes.Buffer)
 		if !templIsBuffer {
@@ -43,7 +43,7 @@ func AdoptionList(pets []pet.Pet, nextURL string) templ.Component {
 		if err != nil {
 			return err
 		}
-		err = base.Body(page(pets, nextURL)).Render(ctx, templBuffer)
+		err = base.Body(page(pets, petTypes, nextURL)).Render(ctx, templBuffer)
 		if err != nil {
 			return err
 		}
@@ -244,7 +244,7 @@ func RoundTime(input float64) int {
 	return int(i)
 }
 
-func page(pets []pet.Pet, nextURL string) templ.Component {
+func page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
 		templBuffer, templIsBuffer := w.(*bytes.Buffer)
 		if !templIsBuffer {
@@ -270,7 +270,7 @@ func page(pets []pet.Pet, nextURL string) templ.Component {
 		if err != nil {
 			return err
 		}
-		err = searchBar().Render(ctx, templBuffer)
+		err = searchBar(petTypes).Render(ctx, templBuffer)
 		if err != nil {
 			return err
 		}

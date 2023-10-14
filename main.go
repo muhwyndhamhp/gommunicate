@@ -46,7 +46,22 @@ func main() {
 			return errs.Wrap(err)
 		}
 
-		adoption := adoption.AdoptionList(pets, "/adoptions/list?page=2&page_size=10")
+		petTypes := []pet.PetTypeSet{
+			{
+				PetType: pet.Cat,
+				URL:     "/dist/cat.png",
+			},
+			{
+				PetType: pet.Dog,
+				URL:     "/dist/dog.png",
+			},
+			{
+				PetType: pet.Bird,
+				URL:     "/dist/bird.png",
+			},
+		}
+
+		adoption := adoption.AdoptionList(pets, petTypes, "/adoptions/list?page=2&page_size=10")
 		return templhelper.RenderAssert(c, http.StatusOK, "", adoption)
 	})
 

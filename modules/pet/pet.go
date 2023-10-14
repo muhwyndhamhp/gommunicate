@@ -26,6 +26,11 @@ type Image struct {
 	URL   string
 }
 
+type PetTypeSet struct {
+	PetType PetType
+	URL     string
+}
+
 type PetType string
 
 const (

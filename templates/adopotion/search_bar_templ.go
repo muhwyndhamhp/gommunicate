@@ -9,7 +9,9 @@ import "context"
 import "io"
 import "bytes"
 
-func searchBar() templ.Component {
+import "github.com/muhwyndhamhp/gotes-mx/modules/pet"
+
+func searchBar(petTypes []pet.PetTypeSet) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
 		templBuffer, templIsBuffer := w.(*bytes.Buffer)
 		if !templIsBuffer {
@@ -22,7 +24,142 @@ func searchBar() templ.Component {
 			var_1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<input class=\"w-1/3 rounded-2xl border-transparent shadow-2xl outline outline-1 outline-slate-300 focus:border-transparent m-auto focus:outline-slate-500 text-lg px-6 py-2\" hx-get=\"/adoptions/list\" hx-trigger=\"keyup changed delay:500ms, search\" hx-target=\"#pets-parent\" hx-swap=\"innerHTML\" name=\"search\" type=\"text\">")
+		_, err = templBuffer.WriteString("<div class=\"w-1/3 m-auto flex flex-row\">")
+		if err != nil {
+			return err
+		}
+		err = petToggle(petTypes).Render(ctx, templBuffer)
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString("<input class=\"w-full rounded-2xl border-transparent z-10 shadow-2xl outline outline-1 outline-slate-300 focus:border-transparent focus:outline-slate-500 text-lg px-6 py-2\" hx-get=\"/adoptions/list\" hx-trigger=\"keyup changed delay:500ms, search\" hx-target=\"#pets-parent\" hx-swap=\"innerHTML\" name=\"search\" type=\"text\"></div>")
+		if err != nil {
+			return err
+		}
+		if !templIsBuffer {
+			_, err = templBuffer.WriteTo(w)
+		}
+		return err
+	})
+}
+
+func petToggle(petTypes []pet.PetTypeSet) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
+		templBuffer, templIsBuffer := w.(*bytes.Buffer)
+		if !templIsBuffer {
+			templBuffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templBuffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		var_2 := templ.GetChildren(ctx)
+		if var_2 == nil {
+			var_2 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		for i, pet := range petTypes {
+			if i == 0 {
+				_, err = templBuffer.WriteString("<button class=\"flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\" _=\"")
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString(templ.EscapeString(toggleNext()))
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString("\">")
+				if err != nil {
+					return err
+				}
+				err = petToggleItem(pet).Render(ctx, templBuffer)
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString("</button>")
+				if err != nil {
+					return err
+				}
+			} else {
+				_, err = templBuffer.WriteString("<button class=\"hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\" _=\"")
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString(templ.EscapeString(toggleNext()))
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString("\">")
+				if err != nil {
+					return err
+				}
+				err = petToggleItem(pet).Render(ctx, templBuffer)
+				if err != nil {
+					return err
+				}
+				_, err = templBuffer.WriteString("</button>")
+				if err != nil {
+					return err
+				}
+			}
+		}
+		if !templIsBuffer {
+			_, err = templBuffer.WriteTo(w)
+		}
+		return err
+	})
+}
+
+func toggleNext() string {
+	return `
+    on click 
+        add .hidden to me
+    then
+        get the next <button/>
+    then
+        log it
+    if 
+        the result matches .hidden and .flex-row
+    then 
+        remove .hidden from it
+    else
+        get the first <button /> in the closest parent <div/>
+    if 
+        the result matches .hidden and .flex-row
+    then 
+        remove .hidden from it
+    `
+}
+
+func petToggleItem(pet pet.PetTypeSet) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) (err error) {
+		templBuffer, templIsBuffer := w.(*bytes.Buffer)
+		if !templIsBuffer {
+			templBuffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templBuffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		var_3 := templ.GetChildren(ctx)
+		if var_3 == nil {
+			var_3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, err = templBuffer.WriteString("<img src=\"")
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString(templ.EscapeString(pet.URL))
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString("\" class=\"m-auto w-6 h-6 me-2\"><p class=\"text-lg mb-0.5\">")
+		if err != nil {
+			return err
+		}
+		var var_4 string = string(pet.PetType)
+		_, err = templBuffer.WriteString(templ.EscapeString(var_4))
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString("</p>")
 		if err != nil {
 			return err
 		}
