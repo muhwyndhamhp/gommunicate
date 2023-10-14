@@ -266,7 +266,15 @@ func page(pets []pet.Pet, nextURL string) templ.Component {
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("</p><div class=\"columns-2 gap-4 md:gap-6 xl:gap-8 md:columns-4 xl:columns-5\">")
+		_, err = templBuffer.WriteString("</p><br>")
+		if err != nil {
+			return err
+		}
+		err = searchBar().Render(ctx, templBuffer)
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString("<br><div class=\"columns-2 gap-4 md:gap-6 mt-4 xl:gap-8 md:columns-4\" id=\"pets-parent\">")
 		if err != nil {
 			return err
 		}

@@ -35,7 +35,7 @@ const (
 )
 
 type PetRepository interface {
-	FetchPets(ctx context.Context, page, pageSize int) ([]Pet, error)
+	FetchPets(ctx context.Context, page, pageSize int, keyword string) ([]Pet, error)
 	InsertPet(ctx context.Context, pet *Pet) error
 	UpdatePet(ctx context.Context, id uint, pet *Pet) error
 	DeletePet(ctx context.Context, pet *Pet) error

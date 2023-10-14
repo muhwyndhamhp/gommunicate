@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/muhwyndhamhp/gotes-mx/config"
@@ -26,53 +24,7 @@ func main() {
 
 	db := db.GetDB()
 
-	tempCtx := context.Background()
-
 	repo := pet.NewPetRepository(db)
-
-	testItem, err := repo.FetchPets(tempCtx, 1, 1)
-	if err != nil {
-		panic(err)
-	}
-
-	now := time.Now()
-	if len(testItem) == 0 {
-		if err := repo.InsertPet(tempCtx, &pet.Pet{
-			Name:     "Aden",
-			Nickname: "Taden",
-			Images: []pet.Image{
-				{
-					PetID: 1,
-					URL:   "https://www.shutterstock.com/image-photo/beautiful-domestic-cat-resting-light-260nw-1600042501.jpg",
-				},
-			},
-			Birthday: &now,
-			Race:     "Scottish Fold",
-			PetType:  pet.Cat,
-			Address1: "My Home 1",
-			Address2: "My Home 2",
-		}); err != nil {
-			panic(err)
-		}
-
-		if err := repo.InsertPet(tempCtx, &pet.Pet{
-			Name:     "Loly",
-			Nickname: "Lolii",
-			Images: []pet.Image{
-				{
-					PetID: 2,
-					URL:   "https://www.shutterstock.com/image-photo/beautiful-domestic-cat-resting-light-260nw-1600042501.jpg",
-				},
-			},
-			Birthday: &now,
-			Race:     "Brittish Shorthair",
-			PetType:  pet.Cat,
-			Address1: "My Home 1",
-			Address2: "My Home 2",
-		}); err != nil {
-			panic(err)
-		}
-	}
 
 	e.Static("/dist", "dist")
 
@@ -89,7 +41,7 @@ func main() {
 	})
 
 	e.GET("/adoptions", func(c echo.Context) error {
-		pets, err := repo.FetchPets(c.Request().Context(), 1, 10)
+		pets, err := repo.FetchPets(c.Request().Context(), 1, 10, "")
 		if err != nil {
 			return errs.Wrap(err)
 		}
@@ -101,12 +53,21 @@ func main() {
 	e.GET("/adoptions/list", func(c echo.Context) error {
 		page, _ := strconv.Atoi(c.QueryParam("page"))
 		pageSize, _ := strconv.Atoi(c.QueryParam("page_size"))
+		keyword := c.QueryParam("search")
 
-		pets, err := repo.FetchPets(c.Request().Context(), page, pageSize)
+		if page == 0 {
+			page = 1
+		}
+		if pageSize == 0 {
+			pageSize = 10
+		}
+
+		pets, err := repo.FetchPets(c.Request().Context(), page, pageSize, keyword)
 		if err != nil {
 			return errs.Wrap(err)
 		}
-		adoption := adoption.List(pets, "/adoptions/list?page=3&page_size=10")
+
+		adoption := adoption.List(pets, fmt.Sprintf("/adoptions/list?page=%d&page_size=%d&search=%s", page+1, pageSize, keyword))
 		return templhelper.RenderAssert(c, http.StatusOK, "", adoption)
 	})
 

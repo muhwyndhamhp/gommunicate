@@ -2,6 +2,8 @@ package pet
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/muhwyndhamhp/gotes-mx/utils/errs"
 	"github.com/muhwyndhamhp/gotes-mx/utils/scopes"
@@ -21,11 +23,23 @@ func (r *repo) DeletePet(ctx context.Context, pet *Pet) error {
 }
 
 // FetchPets implements PetRepository.
-func (r *repo) FetchPets(ctx context.Context, page int, pageSize int) ([]Pet, error) {
+func (r *repo) FetchPets(ctx context.Context, page int, pageSize int, keyword string) ([]Pet, error) {
 	var result []Pet
-	err := r.db.WithContext(ctx).
+
+	query := r.db.Debug().WithContext(ctx).
 		Scopes(scopes.Paginate(page, pageSize)).
-		Preload("Images").
+		Preload("Images")
+
+	if keyword != "" {
+		wrappedKeyword := fmt.Sprintf("%%%s%%", strings.ToLower(keyword))
+		query.
+			Where("lower(name) like ?", wrappedKeyword).
+			Or("lower(nickname) like ?", wrappedKeyword).
+			Or("lower(address1) like ?", wrappedKeyword).
+			Or("lower(address2) like ?", wrappedKeyword)
+	}
+
+	err := query.
 		Find(&result).
 		Error
 	if err != nil {
