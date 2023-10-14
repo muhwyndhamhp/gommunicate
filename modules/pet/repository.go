@@ -1,0 +1,69 @@
+package pet
+
+import (
+	"context"
+
+	"github.com/muhwyndhamhp/gotes-mx/utils/errs"
+	"github.com/muhwyndhamhp/gotes-mx/utils/scopes"
+	"gorm.io/gorm"
+)
+
+type repo struct {
+	db *gorm.DB
+}
+
+// DeletePet implements PetRepository.
+func (r *repo) DeletePet(ctx context.Context, pet *Pet) error {
+	if err := r.db.Delete(pet).Error; err != nil {
+		return errs.Wrap(err)
+	}
+	return nil
+}
+
+// FetchPets implements PetRepository.
+func (r *repo) FetchPets(ctx context.Context, page int, pageSize int) ([]Pet, error) {
+	var result []Pet
+	err := r.db.WithContext(ctx).
+		Scopes(scopes.Paginate(page, pageSize)).
+		Preload("Images").
+		Find(&result).
+		Error
+	if err != nil {
+		return nil, errs.Wrap(err)
+	}
+
+	return result, nil
+}
+
+// GetPetByID implements PetRepository.
+func (r *repo) GetPetByID(ctx context.Context, id uint) (*Pet, error) {
+	var result Pet
+	err := r.db.WithContext(ctx).
+		Preload("Images").
+		First(&result, id).Error
+	if err != nil {
+		return nil, errs.Wrap(err)
+	}
+	return &result, nil
+}
+
+// InsertPet implements PetRepository.
+func (r *repo) InsertPet(ctx context.Context, pet *Pet) error {
+	err := r.db.WithContext(ctx).Save(pet).Error
+	if err != nil {
+		return errs.Wrap(err)
+	}
+	return nil
+}
+
+// UpdatePet implements PetRepository.
+func (r *repo) UpdatePet(ctx context.Context, id uint, pet *Pet) error {
+	pet.ID = id
+	return r.InsertPet(ctx, pet)
+}
+
+func NewPetRepository(db *gorm.DB) PetRepository {
+	return &repo{
+		db: db,
+	}
+}

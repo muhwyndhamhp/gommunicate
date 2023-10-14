@@ -1,0 +1,13 @@
+package base
+
+templ Paginator(isLastItem bool, nextURL string, component templ.Component) {
+    if !isLastItem {
+        <div>
+        {! component}
+        </div>
+    } else {
+        <div hx-get={nextURL} hx-swap="afterend" hx-trigger="revealed">
+        {! component}
+        </div>
+    }
+}

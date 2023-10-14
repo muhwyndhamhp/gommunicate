@@ -1,0 +1,13 @@
+package index
+
+import "github.com/muhwyndhamhp/gotes-mx/templates/base"
+
+templ hello(name string) {
+    <div>Hello, {name}</div>
+    <button hx-get="/next-page" hx-swap="outerHTML">Click me to go to next page</button>
+}
+
+templ Index(name string){
+     @base.Head()
+     @hello(name)
+}

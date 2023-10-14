@@ -1,0 +1,73 @@
+package adoption
+
+import
+(
+"fmt"
+ "github.com/muhwyndhamhp/gotes-mx/modules/pet"
+ )
+
+templ imageCarousel(images []pet.Image) {
+    <div class="w-full relative rounded-2xl" id="carousel-parent">
+        for index, image := range images {
+            if index == 0 {
+            <div class="block transition-opacity duration-1000 ease-in" id={fmt.Sprintf(`cr-item-%d`, index)}>
+                @carouselItem(image, index, len(images))
+            </div>
+            } else {
+            <div class="hidden transition-opacity duration-1000 ease-in" id={fmt.Sprintf(`cr-item-%d`, index)}>
+                @carouselItem(image, index, len(images))
+            </div>
+            }
+        }
+    </div>
+}
+
+templ carouselItem(image pet.Image, index, length int) {
+    <p class="text-white text-xs px-2 py-3 absolute top-0">{ fmt.Sprintf("%d / %d", index + 1, length) }</p>
+
+    <img src={image.URL} class="w-full aspect-square object-cover rounded-2xl"></img>
+
+    <button class="cursor-pointer absolute top-1/2 w-auto 
+        -mt-6 p-4 text-white font-bold text-md ease-in 
+        duration-300 rounded-r-3xl select-none 
+        hover:bg-gray-950" _={ goToPreviousItem() }>&#10094;</button>
+
+    <button class="cursor-pointer absolute top-1/2 w-auto 
+        -mt-6 p-4 text-white font-bold text-md ease-in 
+        duration-300 rounded-l-3xl select-none 
+        hover:bg-gray-950 right-0" _={ goToNextItem() }>&#10095;</button>
+}
+
+func goToPreviousItem() string {
+    return `
+    on click 
+        get the previous <div/>
+    if 
+        the result matches .hidden 
+    then
+        add .hidden to closest <div/>
+    then
+        remove .block from closest <div/>
+    then
+        add .block to the previous <div/>
+    then 
+        remove .hidden from the previous <div/>
+    `
+}
+
+func goToNextItem() string {
+    return `
+    on click 
+        get the next <div/>
+    if 
+        the result matches .hidden 
+    then
+        add .hidden to closest <div/>
+    then
+        remove .block from closest <div/>
+    then
+        add .block to the next <div/>
+    then 
+        remove .hidden from the next <div/>
+    `
+}
