@@ -32,48 +32,32 @@ func imageCarousel(images []pet.Image) templ.Component {
 			return err
 		}
 		for index, image := range images {
+			_, err = templBuffer.WriteString("<div")
+			if err != nil {
+				return err
+			}
 			if index == 0 {
-				_, err = templBuffer.WriteString("<div class=\"block transition-opacity duration-1000 ease-in\" id=\"")
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString(templ.EscapeString(fmt.Sprintf(`cr-item-%d`, index)))
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("\">")
-				if err != nil {
-					return err
-				}
-				err = carouselItem(image, index, len(images)).Render(ctx, templBuffer)
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("</div>")
+				_, err = templBuffer.WriteString(" class=\"block transition-opacity duration-1000 ease-in\"")
 				if err != nil {
 					return err
 				}
 			} else {
-				_, err = templBuffer.WriteString("<div class=\"hidden transition-opacity duration-1000 ease-in\" id=\"")
+				_, err = templBuffer.WriteString(" class=\"hidden transition-opacity duration-1000 ease-in\"")
 				if err != nil {
 					return err
 				}
-				_, err = templBuffer.WriteString(templ.EscapeString(fmt.Sprintf(`cr-item-%d`, index)))
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("\">")
-				if err != nil {
-					return err
-				}
-				err = carouselItem(image, index, len(images)).Render(ctx, templBuffer)
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("</div>")
-				if err != nil {
-					return err
-				}
+			}
+			_, err = templBuffer.WriteString(">")
+			if err != nil {
+				return err
+			}
+			err = carouselItem(image, index, len(images)).Render(ctx, templBuffer)
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</div>")
+			if err != nil {
+				return err
 			}
 		}
 		_, err = templBuffer.WriteString("</div>")

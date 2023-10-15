@@ -9,15 +9,14 @@ import
 templ imageCarousel(images []pet.Image) {
     <div class="w-full relative rounded-2xl" id="carousel-parent">
         for index, image := range images {
+            <div 
             if index == 0 {
-            <div class="block transition-opacity duration-1000 ease-in" id={fmt.Sprintf(`cr-item-%d`, index)}>
-                @carouselItem(image, index, len(images))
-            </div>
+                class="block transition-opacity duration-1000 ease-in"
             } else {
-            <div class="hidden transition-opacity duration-1000 ease-in" id={fmt.Sprintf(`cr-item-%d`, index)}>
+                class="hidden transition-opacity duration-1000 ease-in"
+            }>
                 @carouselItem(image, index, len(images))
             </div>
-            }
         }
     </div>
 }

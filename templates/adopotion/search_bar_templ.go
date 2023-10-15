@@ -57,48 +57,40 @@ func petToggle(petTypes []pet.PetTypeSet) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		for i, pet := range petTypes {
+			_, err = templBuffer.WriteString("<button")
+			if err != nil {
+				return err
+			}
 			if i == 0 {
-				_, err = templBuffer.WriteString("<button class=\"flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\" _=\"")
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString(templ.EscapeString(toggleNext()))
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("\">")
-				if err != nil {
-					return err
-				}
-				err = petToggleItem(pet).Render(ctx, templBuffer)
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("</button>")
+				_, err = templBuffer.WriteString(" class=\"flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
 				if err != nil {
 					return err
 				}
 			} else {
-				_, err = templBuffer.WriteString("<button class=\"hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\" _=\"")
+				_, err = templBuffer.WriteString(" class=\"hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
 				if err != nil {
 					return err
 				}
-				_, err = templBuffer.WriteString(templ.EscapeString(toggleNext()))
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("\">")
-				if err != nil {
-					return err
-				}
-				err = petToggleItem(pet).Render(ctx, templBuffer)
-				if err != nil {
-					return err
-				}
-				_, err = templBuffer.WriteString("</button>")
-				if err != nil {
-					return err
-				}
+			}
+			_, err = templBuffer.WriteString(" _=\"")
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString(templ.EscapeString(toggleNext()))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("\">")
+			if err != nil {
+				return err
+			}
+			err = petToggleItem(pet).Render(ctx, templBuffer)
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</button>")
+			if err != nil {
+				return err
 			}
 		}
 		if !templIsBuffer {

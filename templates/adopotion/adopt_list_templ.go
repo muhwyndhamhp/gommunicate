@@ -14,7 +14,7 @@ import "fmt"
 import (
 	"github.com/muhwyndhamhp/gotes-mx/modules/pet"
 	"github.com/muhwyndhamhp/gotes-mx/templates/base"
-	"math"
+	"github.com/muhwyndhamhp/gotes-mx/utils/timehelper"
 	"time"
 )
 
@@ -229,19 +229,7 @@ func petInfo(petData pet.Pet) templ.Component {
 }
 
 func getBirthday(bd *time.Time) string {
-	return fmt.Sprintf("%v Years Old", RoundTime(time.Since(*bd).Seconds()/31207680))
-}
-
-func RoundTime(input float64) int {
-	var result float64
-	if input < 0 {
-		result = math.Ceil(input - 0.5)
-	} else {
-		result = math.Floor(input + 0.5)
-	}
-	// only interested in integer, ignore fractional
-	i, _ := math.Modf(result)
-	return int(i)
+	return fmt.Sprintf("%v Years Old", timeHelper.RoundTime(time.Since(*bd).Seconds()/31207680))
 }
 
 func page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) templ.Component {

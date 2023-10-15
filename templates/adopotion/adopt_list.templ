@@ -5,9 +5,9 @@ import "fmt"
 import
 (
 "time"
-"math"
  "github.com/muhwyndhamhp/gotes-mx/templates/base"
  "github.com/muhwyndhamhp/gotes-mx/modules/pet"
+ "github.com/muhwyndhamhp/gotes-mx/utils/timehelper"
  )
 
 func isLastItem(index, length int) bool {
@@ -39,26 +39,17 @@ templ item(petData pet.Pet, index, length int, nextURL string) {
 templ petInfo(petData pet.Pet) {
     <div class="-translate-y-20 rounded-2xl p-4 w-full bg-white shadow-xl border border-cyan-800 shadow-cyan-800/20 z-20">
         <p class="text-2xl">{ petData.Name } <span class="text-sm">({ petData.Nickname })</span></p>
+
         <p class="text-xs text-gray-700 mt-1">{ getBirthday(petData.Birthday) } | { petData.Race }</p>
+
         <p class="text-sm mt-2">{ petData.Address1 }, { petData.Address2 }</p>
     </div>
 }
 
 func getBirthday(bd *time.Time) string {
-    return fmt.Sprintf("%v Years Old", RoundTime(time.Since(*bd).Seconds() / 31207680))
+    return fmt.Sprintf("%v Years Old", timeHelper.RoundTime(time.Since(*bd).Seconds() / 31207680))
 }
 
-func RoundTime(input float64) int {
-	var result float64
-	if input < 0 {
-		result = math.Ceil(input - 0.5)
-	} else {
-		result = math.Floor(input + 0.5)
-	}
-	// only interested in integer, ignore fractional
-	i, _ := math.Modf(result)
-	return int(i)
-}
 
 templ page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) {
     <p>Followings are list of adoptable pets!</p>

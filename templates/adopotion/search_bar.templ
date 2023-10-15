@@ -18,15 +18,16 @@ templ searchBar(petTypes []pet.PetTypeSet) {
 
 templ petToggle(petTypes []pet.PetTypeSet) {
     for i, pet := range petTypes {
-        if i == 0 {
-        <button class="flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200" _={ toggleNext() }>
+        <button 
+            if i == 0 {
+                class="flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200" 
+            }
+            else {
+                class="hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200"
+            } 
+            _={ toggleNext() }>
             @petToggleItem(pet)
         </button>
-        } else {
-        <button class="hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200" _={ toggleNext() }>
-            @petToggleItem(pet)
-        </button>
-        }
     }
 }
 
