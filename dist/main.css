@@ -4,3 +4,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.inner:nth-child(4n+1) {
+    clear: left;
+}
+
+.inner {
+    float: left;
+}
+
+.blocking-indicator {
+    display: none;
+    transition: opacity 500ms ease-in;
+}
+
+.htmx-request .blocking-indicator {
+    display: block;
+}
+
+.htmx-request.blocking-indicator {
+    display: block;
+}

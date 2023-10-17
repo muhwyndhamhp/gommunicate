@@ -27,7 +27,7 @@ func imageCarousel(images []pet.Image) templ.Component {
 			var_1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<div class=\"w-full relative rounded-2xl\" id=\"carousel-parent\">")
+		_, err = templBuffer.WriteString("<div class=\"w-full rounded-2xl\" id=\"carousel-parent\">")
 		if err != nil {
 			return err
 		}
@@ -37,7 +37,7 @@ func imageCarousel(images []pet.Image) templ.Component {
 				return err
 			}
 			if index == 0 {
-				_, err = templBuffer.WriteString(" class=\"block transition-opacity duration-1000 ease-in\"")
+				_, err = templBuffer.WriteString(" class=\"block relative transition-opacity duration-1000 ease-in\"")
 				if err != nil {
 					return err
 				}
@@ -84,7 +84,7 @@ func carouselItem(image pet.Image, index, length int) templ.Component {
 			var_2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<p class=\"text-white text-xs px-2 py-3 absolute top-0\">")
+		_, err = templBuffer.WriteString("<p class=\"text-white text-xs mx-2 my-3 absolute top-0\">")
 		if err != nil {
 			return err
 		}
@@ -101,43 +101,49 @@ func carouselItem(image pet.Image, index, length int) templ.Component {
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("\" class=\"w-full aspect-square object-cover rounded-2xl\"><button class=\"cursor-pointer absolute top-1/2 w-auto \n        -mt-6 p-4 text-white font-bold text-md ease-in \n        duration-300 rounded-r-3xl select-none \n        hover:bg-gray-950\" _=\"")
+		_, err = templBuffer.WriteString("\" class=\"w-full aspect-square object-cover top-0 rounded-2xl\">")
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString(templ.EscapeString(goToPreviousItem()))
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString("\">")
-		if err != nil {
-			return err
-		}
-		var_4 := `&#10094;`
-		_, err = templBuffer.WriteString(var_4)
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString("</button><button class=\"cursor-pointer absolute top-1/2 w-auto \n        -mt-6 p-4 text-white font-bold text-md ease-in \n        duration-300 rounded-l-3xl select-none \n        hover:bg-gray-950 right-0\" _=\"")
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString(templ.EscapeString(goToNextItem()))
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString("\">")
-		if err != nil {
-			return err
-		}
-		var_5 := `&#10095;`
-		_, err = templBuffer.WriteString(var_5)
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString("</button>")
-		if err != nil {
-			return err
+		if length > 1 {
+			_, err = templBuffer.WriteString("<button class=\"cursor-pointer absolute top-1/2 w-auto \n        -mt-6 p-4 text-white font-bold text-md ease-in bg-opacity-25\n        duration-300 rounded-r-3xl select-none \n        bg-gray-950 hover:bg-opacity-90\" _=\"")
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString(templ.EscapeString(goToPreviousItem()))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("\">")
+			if err != nil {
+				return err
+			}
+			var_4 := `&#10094;`
+			_, err = templBuffer.WriteString(var_4)
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</button> <button class=\"cursor-pointer absolute top-1/2 w-auto \n        -mt-6 p-4 text-white font-bold text-md ease-in bg-opacity-25\n        duration-300 rounded-l-3xl select-none \n        bg-gray-950 hover:bg-opacity-90 right-0\" _=\"")
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString(templ.EscapeString(goToNextItem()))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("\">")
+			if err != nil {
+				return err
+			}
+			var_5 := `&#10095;`
+			_, err = templBuffer.WriteString(var_5)
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</button>")
+			if err != nil {
+				return err
+			}
 		}
 		if !templIsBuffer {
 			_, err = templBuffer.WriteTo(w)
@@ -153,13 +159,9 @@ func goToPreviousItem() string {
     if 
         the result matches .hidden 
     then
-        add .hidden to closest <div/>
+        toggle between .hidden and .block on closest <div/>
     then
-        remove .block from closest <div/>
-    then
-        add .block to the previous <div/>
-    then 
-        remove .hidden from the previous <div/>
+        toggle between .hidden and .block on the previous <div/>
     `
 }
 
@@ -170,12 +172,8 @@ func goToNextItem() string {
     if 
         the result matches .hidden 
     then
-        add .hidden to closest <div/>
+        toggle between .hidden and .block on closest <div/>
     then
-        remove .block from closest <div/>
-    then
-        add .block to the next <div/>
-    then 
-        remove .hidden from the next <div/>
+        toggle between .hidden and .block on the next <div/>
     `
 }

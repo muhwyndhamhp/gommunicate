@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/muhwyndhamhp/gotes-mx/config"
@@ -41,12 +42,16 @@ func main() {
 	})
 
 	e.GET("/adoptions", func(c echo.Context) error {
-		pets, err := repo.FetchPets(c.Request().Context(), 1, 10, "")
+		pets, err := repo.FetchPets(c.Request().Context(), 1, 10, pet.All, "")
 		if err != nil {
 			return errs.Wrap(err)
 		}
 
 		petTypes := []pet.PetTypeSet{
+			{
+				PetType: pet.All,
+				URL:     "/dist/animal.png",
+			},
 			{
 				PetType: pet.Cat,
 				URL:     "/dist/cat.png",
@@ -69,6 +74,7 @@ func main() {
 		page, _ := strconv.Atoi(c.QueryParam("page"))
 		pageSize, _ := strconv.Atoi(c.QueryParam("page_size"))
 		keyword := c.QueryParam("search")
+		petType := pet.PetType(c.QueryParam("pet_type"))
 
 		if page == 0 {
 			page = 1
@@ -77,7 +83,9 @@ func main() {
 			pageSize = 10
 		}
 
-		pets, err := repo.FetchPets(c.Request().Context(), page, pageSize, keyword)
+		time.Sleep(3 * time.Second)
+
+		pets, err := repo.FetchPets(c.Request().Context(), page, pageSize, petType, keyword)
 		if err != nil {
 			return errs.Wrap(err)
 		}

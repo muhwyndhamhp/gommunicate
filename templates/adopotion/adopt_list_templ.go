@@ -93,7 +93,7 @@ func item(petData pet.Pet, index, length int, nextURL string) templ.Component {
 			var_3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<div class=\"relative w-full break-inside-avoid-column\"")
+		_, err = templBuffer.WriteString("<div class=\"col-span-1 relative mb-16\"")
 		if err != nil {
 			return err
 		}
@@ -147,7 +147,7 @@ func petInfo(petData pet.Pet) templ.Component {
 			var_4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<div class=\"-translate-y-20 rounded-2xl p-4 w-full bg-white shadow-xl border border-cyan-800 shadow-cyan-800/20 z-20\"><p class=\"text-2xl\">")
+		_, err = templBuffer.WriteString("<div class=\"rounded-2xl absolute -bottom-16 p-4 w-full bg-white shadow-xl border outline-slate-200 shadow-cyan-800/20 z-20\"><p class=\"text-2xl\">")
 		if err != nil {
 			return err
 		}
@@ -262,7 +262,15 @@ func page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) templ.Compo
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("<br><div class=\"columns-2 gap-4 md:gap-6 mt-4 xl:gap-8 md:columns-4\" id=\"pets-parent\">")
+		_, err = templBuffer.WriteString("<br><div class=\"relative\">")
+		if err != nil {
+			return err
+		}
+		err = loading().Render(ctx, templBuffer)
+		if err != nil {
+			return err
+		}
+		_, err = templBuffer.WriteString("<div class=\"grid gap-6 grid-cols-1 mt-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5\" id=\"pets-parent\">")
 		if err != nil {
 			return err
 		}
@@ -270,7 +278,7 @@ func page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) templ.Compo
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("</div>")
+		_, err = templBuffer.WriteString("</div></div>")
 		if err != nil {
 			return err
 		}

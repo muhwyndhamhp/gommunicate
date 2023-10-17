@@ -88,7 +88,7 @@ func Body(component templ.Component) templ.Component {
 			var_5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<body class=\"bg-white-50 px-6 w-full flex flex-col\">")
+		_, err = templBuffer.WriteString("<body class=\"bg-white-50 px-6 w-full flex flex-col relative\">")
 		if err != nil {
 			return err
 		}

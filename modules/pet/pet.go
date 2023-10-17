@@ -34,13 +34,14 @@ type PetTypeSet struct {
 type PetType string
 
 const (
+	All  PetType = ""
 	Cat  PetType = "cat"
 	Dog  PetType = "dog"
 	Bird PetType = "bird"
 )
 
 type PetRepository interface {
-	FetchPets(ctx context.Context, page, pageSize int, keyword string) ([]Pet, error)
+	FetchPets(ctx context.Context, page, pageSize int, petType PetType, keyword string) ([]Pet, error)
 	InsertPet(ctx context.Context, pet *Pet) error
 	UpdatePet(ctx context.Context, id uint, pet *Pet) error
 	DeletePet(ctx context.Context, pet *Pet) error

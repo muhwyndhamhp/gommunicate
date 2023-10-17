@@ -9,7 +9,8 @@ kill_delay = 10
 
 # Ignore these filename extensions or directories.
 exclude_dir = ["postgres","vendor","misc","terraform"]
-include_ext = ["templ"]
+exclude_regex =["_templ\\.go"]
+include_ext = ["templ", "go"]
 
 [log]
 # Show log time

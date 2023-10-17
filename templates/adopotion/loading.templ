@@ -1,0 +1,32 @@
+package adoption
+
+
+templ loading() {
+<div class="blocking-indicator absolute top-2 left-0 right-0 bg-white z-30" id="pet-loading">
+    <div class="grid gap-6 grid-cols-1 mt-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+    for i := 0; i < 12; i++ {
+        @loadingItem()
+    }
+    </div>
+</div>
+}
+
+templ loadingItem() {
+<div class="animate-pulse col-span-1 relative mb-16">
+    <div class="w-full bg-blue-100 rounded-2xl">
+        <div class="block relative">	
+            <div class="w-full aspect-square object-cover top-0 border-blue-200 border rounded-2xl">
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-2xl absolute -bottom-16 p-4 w-full bg-white z-20">
+        <div class="bg-blue-100 p-2 w-20 rounded-md"></div>
+        <div class="bg-blue-100 p-2 w-full me-20 mt-1 rounded-md"></div>
+        <div class="bg-blue-100 p-2 w-20 mt-2 rounded-md"></div>
+    </div>
+</div>
+}
+
+
+

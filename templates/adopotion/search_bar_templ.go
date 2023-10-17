@@ -24,7 +24,7 @@ func searchBar(petTypes []pet.PetTypeSet) templ.Component {
 			var_1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, err = templBuffer.WriteString("<div class=\"w-1/3 m-auto flex flex-row\">")
+		_, err = templBuffer.WriteString("<form class=\"w-full lg:w-2/3 xl:w-1/2 m-auto flex flex-row\">")
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ func searchBar(petTypes []pet.PetTypeSet) templ.Component {
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("<input class=\"w-full rounded-2xl border-transparent z-10 shadow-2xl outline outline-1 outline-slate-300 focus:border-transparent focus:outline-slate-500 text-lg px-6 py-2\" hx-get=\"/adoptions/list\" hx-trigger=\"keyup changed delay:500ms, search\" hx-target=\"#pets-parent\" hx-swap=\"innerHTML\" name=\"search\" type=\"text\"></div>")
+		_, err = templBuffer.WriteString("<input class=\"w-full rounded-2xl border-transparent z-10 shadow-2xl outline outline-1 outline-slate-300 focus:border-transparent focus:outline-slate-500 text-lg px-6 py-2\" hx-get=\"/adoptions/list\" hx-trigger=\"keyup changed delay:500ms, search\" hx-target=\"#pets-parent\" hx-swap=\"innerHTML\" name=\"search\" hx-indicator=\"#pet-loading\" id=\"search\" type=\"text\" _=\"\n        on htmx:configRequest \n            get the first &lt;li.select/&gt; in the closest parent &lt;form/&gt; \n        then \n            set pet to result@value \n        then \n            js(pet) event.detail.parameters[&#39;pet_type&#39;] = pet\"></form>")
 		if err != nil {
 			return err
 		}
@@ -57,22 +57,30 @@ func petToggle(petTypes []pet.PetTypeSet) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		for i, pet := range petTypes {
-			_, err = templBuffer.WriteString("<button")
+			_, err = templBuffer.WriteString("<li")
 			if err != nil {
 				return err
 			}
 			if i == 0 {
-				_, err = templBuffer.WriteString(" class=\"flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
+				_, err = templBuffer.WriteString(" class=\"select flex flex-row cursor-pointer translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
 				if err != nil {
 					return err
 				}
 			} else {
-				_, err = templBuffer.WriteString(" class=\"hidden flex flex-row translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
+				_, err = templBuffer.WriteString(" class=\"hidden flex flex-row cursor-pointer translate-x-12 ps-6 pe-20 py-2 bg-blue-100 rounded-2xl border-transparent outline-1 outline-cyan-200\"")
 				if err != nil {
 					return err
 				}
 			}
-			_, err = templBuffer.WriteString(" _=\"")
+			_, err = templBuffer.WriteString(" value=\"")
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString(templ.EscapeString(string(pet.PetType)))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("\" _=\"")
 			if err != nil {
 				return err
 			}
@@ -88,7 +96,7 @@ func petToggle(petTypes []pet.PetTypeSet) templ.Component {
 			if err != nil {
 				return err
 			}
-			_, err = templBuffer.WriteString("</button>")
+			_, err = templBuffer.WriteString("</li>")
 			if err != nil {
 				return err
 			}
@@ -103,21 +111,23 @@ func petToggle(petTypes []pet.PetTypeSet) templ.Component {
 func toggleNext() string {
 	return `
     on click 
-        add .hidden to me
+        toggle between .select and .hidden on me
     then
-        get the next <button/>
+        get the next <li/>
+    if the result matches .hidden and .flex-row
+        then 
+            toggle between .select and .hidden on it
+
+    else get the first <li/> in the closest parent <form/>
+        if 
+            the result matches .hidden and .flex-row
+        then 
+            toggle between .select and .hidden on it
+        end
+    end
     then
-        log it
-    if 
-        the result matches .hidden and .flex-row
-    then 
-        remove .hidden from it
-    else
-        get the first <button /> in the closest parent <div/>
-    if 
-        the result matches .hidden and .flex-row
-    then 
-        remove .hidden from it
+        js htmx.trigger("#search", "search")
+    end
     `
 }
 
@@ -142,18 +152,38 @@ func petToggleItem(pet pet.PetTypeSet) templ.Component {
 		if err != nil {
 			return err
 		}
-		_, err = templBuffer.WriteString("\" class=\"m-auto w-6 h-6 me-2\"><p class=\"text-lg mb-0.5\">")
+		_, err = templBuffer.WriteString("\" class=\"m-auto w-6 h-6 me-2\">")
 		if err != nil {
 			return err
 		}
-		var var_4 string = string(pet.PetType)
-		_, err = templBuffer.WriteString(templ.EscapeString(var_4))
-		if err != nil {
-			return err
-		}
-		_, err = templBuffer.WriteString("</p>")
-		if err != nil {
-			return err
+		if string(pet.PetType) == "" {
+			_, err = templBuffer.WriteString("<p class=\"text-lg mb-0.5\">")
+			if err != nil {
+				return err
+			}
+			var_4 := `All`
+			_, err = templBuffer.WriteString(var_4)
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</p>")
+			if err != nil {
+				return err
+			}
+		} else {
+			_, err = templBuffer.WriteString("<p class=\"text-lg mb-0.5\">")
+			if err != nil {
+				return err
+			}
+			var var_5 string = string(pet.PetType)
+			_, err = templBuffer.WriteString(templ.EscapeString(var_5))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("</p>")
+			if err != nil {
+				return err
+			}
 		}
 		if !templIsBuffer {
 			_, err = templBuffer.WriteTo(w)

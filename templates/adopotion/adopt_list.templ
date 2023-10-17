@@ -27,7 +27,8 @@ templ List(pets []pet.Pet, nextURL string) {
 }
 
 templ item(petData pet.Pet, index, length int, nextURL string) {
-    <div class="relative w-full break-inside-avoid-column"
+    <div class="col-span-1 relative mb-16"
+
     if index == length - 1 {
         hx-get={ nextURL } hx-swap="afterend" hx-trigger="revealed"
     }>
@@ -37,7 +38,7 @@ templ item(petData pet.Pet, index, length int, nextURL string) {
 }
 
 templ petInfo(petData pet.Pet) {
-    <div class="-translate-y-20 rounded-2xl p-4 w-full bg-white shadow-xl border border-cyan-800 shadow-cyan-800/20 z-20">
+    <div class="rounded-2xl absolute -bottom-16 p-4 w-full bg-white shadow-xl border outline-slate-200 shadow-cyan-800/20 z-20">
         <p class="text-2xl">{ petData.Name } <span class="text-sm">({ petData.Nickname })</span></p>
 
         <p class="text-xs text-gray-700 mt-1">{ getBirthday(petData.Birthday) } | { petData.Race }</p>
@@ -56,7 +57,11 @@ templ page(pets []pet.Pet, petTypes []pet.PetTypeSet, nextURL string) {
     <br/>
     @searchBar(petTypes)
     <br />
-    <div class="columns-2 gap-4 md:gap-6 mt-4 xl:gap-8 md:columns-4" id="pets-parent">
+    <div class="relative">
+    @loading()
+    <div class="grid gap-6 grid-cols-1 mt-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5" id="pets-parent">
         @List(pets, nextURL)
     </div>
+    </div>
 }
+

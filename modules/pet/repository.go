@@ -23,7 +23,7 @@ func (r *repo) DeletePet(ctx context.Context, pet *Pet) error {
 }
 
 // FetchPets implements PetRepository.
-func (r *repo) FetchPets(ctx context.Context, page int, pageSize int, keyword string) ([]Pet, error) {
+func (r *repo) FetchPets(ctx context.Context, page int, pageSize int, petType PetType, keyword string) ([]Pet, error) {
 	var result []Pet
 
 	query := r.db.Debug().WithContext(ctx).
@@ -32,11 +32,16 @@ func (r *repo) FetchPets(ctx context.Context, page int, pageSize int, keyword st
 
 	if keyword != "" {
 		wrappedKeyword := fmt.Sprintf("%%%s%%", strings.ToLower(keyword))
-		query.
-			Where("lower(name) like ?", wrappedKeyword).
-			Or("lower(nickname) like ?", wrappedKeyword).
-			Or("lower(address1) like ?", wrappedKeyword).
-			Or("lower(address2) like ?", wrappedKeyword)
+		query = query.Where(
+			query.Where("lower(name) like ?", wrappedKeyword).
+				Or("lower(nickname) like ?", wrappedKeyword).
+				Or("lower(address1) like ?", wrappedKeyword).
+				Or("lower(address2) like ?", wrappedKeyword),
+		)
+	}
+
+	if petType != All {
+		query.Where("pet_type = ?", petType)
 	}
 
 	err := query.
