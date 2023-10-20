@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/muhwyndhamhp/gotes-mx/config"
@@ -82,8 +81,6 @@ func main() {
 		if pageSize == 0 {
 			pageSize = 10
 		}
-
-		time.Sleep(3 * time.Second)
 
 		pets, err := repo.FetchPets(c.Request().Context(), page, pageSize, petType, keyword)
 		if err != nil {
